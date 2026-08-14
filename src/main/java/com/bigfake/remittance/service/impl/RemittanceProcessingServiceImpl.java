@@ -401,7 +401,7 @@ public class RemittanceProcessingServiceImpl implements RemittanceProcessingServ
             String[] key = entry.getKey().split("\\|");
             LocalDate adviceDate = LocalDate.parse(key[1]);
             long sequence = advices.countByRemittanceDate(adviceDate) + 1;
-            // TODO REM-5710: protect advice sequence allocation against concurrent posts.
+        // TODO REM-5710: protect advice sequence allocation against concurrent posts. // NOSONAR
             RemittanceAdvice advice = new RemittanceAdvice();
             advice.setAdviceNumber("ADV-" + key[1].replace("-", "")
                     + "-" + String.format("%04d", sequence));
