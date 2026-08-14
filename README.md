@@ -83,21 +83,31 @@ experiments with `remittance.scheduling.enabled=false`.
 
 ## Known Tech Debt / upgrade blockers
 
-- [ ] `javax.*` in `domain/AuditableEntity.java`, `domain/Payer.java`, all
-  `dto/*Request.java`, and servlet validation handlers must become `jakarta.*`.
-- [ ] `config/SecurityConfig.java` extends removed `WebSecurityConfigurerAdapter` and
+- [ ] `javax.*` in `src/main/java/com/bigfake/remittance/domain/AuditableEntity.java`,
+  `src/main/java/com/bigfake/remittance/domain/Payer.java`,
+  `src/main/java/com/bigfake/remittance/dto/ManualMatchRequest.java`,
+  `src/main/java/com/bigfake/remittance/dto/PayerRequest.java`,
+  `src/main/java/com/bigfake/remittance/dto/WebhookRequest.java`, and
+  `src/main/java/com/bigfake/remittance/controller/GlobalExceptionHandler.java`
+  must become `jakarta.*`.
+- [ ] `src/main/java/com/bigfake/remittance/config/SecurityConfig.java` extends removed
+  `WebSecurityConfigurerAdapter` and
   uses removed `antMatchers` (REM-5580).
 - [ ] `springdoc-openapi-ui` 1.7.x must become the springdoc 2.x starter;
-  `config/OpenApiConfig.java` and the `/swagger-ui.html` legacy path need review.
+  `src/main/java/com/bigfake/remittance/config/OpenApiConfig.java` and the
+  `/swagger-ui.html` legacy path need review.
 - [ ] Hibernate 5 to 6 requires migrating `@Type(type = "yes_no")` in
-  `domain/AuditableEntity.java` and the explicit dialect properties in
-  `src/main/resources/application.yml` and `application-prod.yml`.
+  `src/main/java/com/bigfake/remittance/domain/AuditableEntity.java` and the
+  explicit dialect properties in `src/main/resources/application.yml` and
+  `src/main/resources/application-prod.yml`.
 - [ ] JUnit 4 Vintage compatibility is retained by `LegacyAmountUtilsTest`,
   `LegacyDateUtilsTest`, and `LegacyFixedWidthParserTest`.
 - [ ] `Dockerfile` uses a Java 11 base image and must move to Java 17.
-- [ ] `util/DateUtils.java` and `parser/LegacyRemittanceParser.java` use
-  `SimpleDateFormat`, `java.util.Date`, and `Calendar`.
-- [ ] `client/CashApplicationClient.java` has no timeout, circuit breaker or proper retry (REM-5709)
+- [ ] `src/main/java/com/bigfake/remittance/util/DateUtils.java` and
+  `src/main/java/com/bigfake/remittance/service/impl/RemittanceProcessingServiceImpl.java`
+  use `SimpleDateFormat`, `java.util.Date`, and `Calendar`.
+- [ ] `src/main/java/com/bigfake/remittance/client/CashApplicationClient.java` has no
+  timeout, circuit breaker or proper retry (REM-5709).
 - [ ] Hibernate naming assumptions remain undocumented in migrations (FIXME REM-5522)
 
 ## Building

@@ -9,9 +9,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+import java.util.List;
 
 public interface RemittanceFileRepository extends JpaRepository<RemittanceFile, Long> {
     Optional<RemittanceFile> findByChecksum(String checksum);
+    List<RemittanceFile> findAllByChecksum(String checksum);
     Page<RemittanceFile> findByStatus(FileStatus status, Pageable pageable);
     @Query("select f from RemittanceFile f left join fetch f.lines where f.id = :id")
     Optional<RemittanceFile> findWithLines(@Param("id") Long id);

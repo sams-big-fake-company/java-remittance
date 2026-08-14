@@ -31,6 +31,7 @@ import com.bigfake.remittance.repository.RemittanceAdviceRepository;
 import com.bigfake.remittance.repository.RemittanceFileRepository;
 import com.bigfake.remittance.repository.RemittanceLineRepository;
 import com.bigfake.remittance.service.MatchingService;
+import com.bigfake.remittance.service.DuplicateFileAuditService;
 import com.bigfake.remittance.service.RemittanceProcessingService;
 import com.bigfake.remittance.util.AmountUtils;
 import com.bigfake.remittance.util.ChecksumUtils;
@@ -66,6 +67,7 @@ public class RemittanceProcessingServiceImpl implements RemittanceProcessingServ
     private final PaymentInstructionRepository instructions;
     private final MatchingService matching;
     private final CashApplicationClient cashClient;
+    private final DuplicateFileAuditService duplicateFileAudit;
     public RemittanceProcessingServiceImpl(
             RemittanceFileRepository files,
             RemittanceLineRepository lines,
@@ -75,7 +77,8 @@ public class RemittanceProcessingServiceImpl implements RemittanceProcessingServ
             RemittanceAdviceRepository advices,
             PaymentInstructionRepository instructions,
             MatchingService matching,
-            CashApplicationClient cashClient) {
+            CashApplicationClient cashClient,
+            DuplicateFileAuditService duplicateFileAudit) {
         this.files = files;
         this.lines = lines;
         this.payers = payers;
@@ -85,6 +88,7 @@ public class RemittanceProcessingServiceImpl implements RemittanceProcessingServ
         this.instructions = instructions;
         this.matching = matching;
         this.cashClient = cashClient;
+        this.duplicateFileAudit = duplicateFileAudit;
     }
     @Override
     public FileSummaryDto ingest(String fileName, byte[] content) {
@@ -97,7 +101,7 @@ public class RemittanceProcessingServiceImpl implements RemittanceProcessingServ
             rejected.setStatus(FileStatus.REJECTED);
             rejected.setRejectReason(RejectReason.DUPLICATE_FILE);
             rejected.setOriginalFileId(duplicate.get().getId());
-            files.save(rejected);
+            duplicateFileAudit.saveRejectedDuplicate(rejected);
             throw new ConflictException("Duplicate remittance file; original id " + duplicate.get().getId());
         }
         RemittanceFile file = new RemittanceFile();

@@ -24,6 +24,7 @@ import com.bigfake.remittance.repository.RemittanceAdviceRepository;
 import com.bigfake.remittance.repository.RemittanceFileRepository;
 import com.bigfake.remittance.repository.RemittanceLineRepository;
 import com.bigfake.remittance.service.MatchingService;
+import com.bigfake.remittance.service.DuplicateFileAuditService;
 import com.bigfake.remittance.service.impl.RemittanceProcessingServiceImpl;
 import com.bigfake.remittance.dto.ManualMatchRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,13 +68,15 @@ class RemittanceProcessingServiceTest {
     private MatchingService matching;
     @Mock
     private CashApplicationClient cashClient;
+    @Mock
+    private DuplicateFileAuditService duplicateFileAudit;
 
     private RemittanceProcessingServiceImpl service;
 
     @BeforeEach
     void setUp() {
         service = new RemittanceProcessingServiceImpl(files, lines, payers, reasons, invoices,
-                advices, instructions, matching, cashClient);
+                advices, instructions, matching, cashClient, duplicateFileAudit);
         lenient().when(files.findByChecksum(any())).thenReturn(Optional.empty());
         lenient().when(files.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
     }
@@ -189,7 +192,7 @@ class RemittanceProcessingServiceTest {
         original.setId(99L);
         when(files.findByChecksum(any())).thenReturn(Optional.of(original));
         assertThrows(ConflictException.class, () -> service.ingest("duplicate.txt", "x".getBytes()));
-        verify(files).save(any(RemittanceFile.class));
+        verify(duplicateFileAudit).saveRejectedDuplicate(any(RemittanceFile.class));
     }
 
     @Test
