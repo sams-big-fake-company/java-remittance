@@ -108,7 +108,7 @@ public class RemittanceProcessingServiceImpl implements RemittanceProcessingServ
         file.setFileName(fileName);
         file.setChecksum(checksum);
         file.setStatus(FileStatus.RECEIVED);
-        file.setReceivedAt(LocalDateTime.now());
+        file.setReceivedAt(LocalDateTime.now(ZoneId.systemDefault()));
         file.setLines(new ArrayList<>());
         files.save(file);
         file.setStatus(FileStatus.PARSING);
@@ -280,7 +280,7 @@ public class RemittanceProcessingServiceImpl implements RemittanceProcessingServ
             reject(l, RejectReason.INVALID_AMOUNT, "Amounts must be positive and non-negative");
             return;
         }
-        if (l.getRemittanceDate().isAfter(LocalDate.now().plusDays(90))) {
+        if (l.getRemittanceDate().isAfter(LocalDate.now(ZoneId.systemDefault()).plusDays(90))) {
             reject(l, RejectReason.INVALID_DATE, "Remittance date is too far in the future");
             return;
         }
@@ -513,7 +513,7 @@ public class RemittanceProcessingServiceImpl implements RemittanceProcessingServ
         for (PaymentInstruction instruction : instructions.findByStatus(InstructionStatus.PENDING)) {
             if (cashClient.send(instruction)) {
                 instruction.setStatus(InstructionStatus.ACKNOWLEDGED);
-                instruction.setSentAt(LocalDateTime.now());
+                instruction.setSentAt(LocalDateTime.now(ZoneId.systemDefault()));
             } else {
                 instruction.setStatus(InstructionStatus.FAILED);
                 instruction.setFailureReason("Downstream rejected instruction");

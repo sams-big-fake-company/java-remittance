@@ -22,9 +22,6 @@ public class RemittanceAdvice extends AuditableEntity {
     @Enumerated(EnumType.STRING)
     private AdviceStatus status;
 
-    public RemittanceAdvice() {
-    }
-
     public String getAdviceNumber() { return adviceNumber; }
     public void setAdviceNumber(String adviceNumber) { this.adviceNumber = adviceNumber; }
     public Long getRemittanceFileId() { return remittanceFileId; }

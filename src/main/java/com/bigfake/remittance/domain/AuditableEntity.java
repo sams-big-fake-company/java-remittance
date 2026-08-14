@@ -11,6 +11,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Version;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @MappedSuperclass
 public abstract class AuditableEntity {
@@ -36,7 +37,7 @@ public abstract class AuditableEntity {
 
     @PrePersist
     public void beforeInsert() {
-        createdAt = LocalDateTime.now();
+        createdAt = LocalDateTime.now(ZoneId.systemDefault());
         updatedAt = createdAt;
         if (createdBy == null) {
             createdBy = "system";
@@ -45,7 +46,7 @@ public abstract class AuditableEntity {
 
     @PreUpdate
     public void beforeUpdate() {
-        updatedAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now(ZoneId.systemDefault());
         updatedBy = "system";
     }
 

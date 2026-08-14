@@ -23,9 +23,6 @@ public class PaymentInstruction extends AuditableEntity {
     private LocalDateTime sentAt;
     private String failureReason;
 
-    public PaymentInstruction() {
-    }
-
     public String getInstructionReference() { return instructionReference; }
     public void setInstructionReference(String instructionReference) { this.instructionReference = instructionReference; }
     public Long getRemittanceAdviceId() { return remittanceAdviceId; }

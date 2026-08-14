@@ -22,9 +22,6 @@ public class OpenInvoice extends AuditableEntity {
     @Enumerated(EnumType.STRING)
     private InvoiceStatus status;
 
-    public OpenInvoice() {
-    }
-
     public String getPayerCode() { return payerCode; }
     public void setPayerCode(String payerCode) { this.payerCode = payerCode; }
     public String getInvoiceReference() { return invoiceReference; }

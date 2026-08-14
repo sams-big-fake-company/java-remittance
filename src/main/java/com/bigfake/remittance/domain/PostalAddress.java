@@ -11,9 +11,6 @@ public class PostalAddress {
     private String postalCode;
     private String country;
 
-    public PostalAddress() {
-    }
-
     public String getAddressLine1() { return addressLine1; }
     public void setAddressLine1(String addressLine1) { this.addressLine1 = addressLine1; }
     public String getAddressLine2() { return addressLine2; }

@@ -27,9 +27,6 @@ public class Payer extends AuditableEntity {
     @Embedded
     private PostalAddress address;
 
-    public Payer() {
-    }
-
     public String getPayerCode() { return payerCode; }
     public void setPayerCode(String payerCode) { this.payerCode = payerCode; }
     public String getName() { return name; }

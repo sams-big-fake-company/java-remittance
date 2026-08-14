@@ -16,9 +16,6 @@ public class DeductionReasonCode {
     @Column(nullable = false)
     private Boolean active;
 
-    public DeductionReasonCode() {
-    }
-
     public String getCode() { return code; }
     public void setCode(String code) { this.code = code; }
     public String getDescription() { return description; }

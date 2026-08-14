@@ -290,10 +290,11 @@ class RemittanceProcessingServiceTest {
     }
 
     private RemittanceFile ingest(String records) {
-        return captureFile(service.ingest("file.txt", records.getBytes()));
+        service.ingest("file.txt", records.getBytes());
+        return captureFile();
     }
 
-    private RemittanceFile captureFile(Object ignored) {
+    private RemittanceFile captureFile() {
         ArgumentCaptor<RemittanceFile> captor = ArgumentCaptor.forClass(RemittanceFile.class);
         verify(files, org.mockito.Mockito.atLeastOnce()).save(captor.capture());
         return captor.getAllValues().get(captor.getAllValues().size() - 1);

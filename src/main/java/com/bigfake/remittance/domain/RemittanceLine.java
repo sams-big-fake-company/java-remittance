@@ -44,9 +44,6 @@ public class RemittanceLine extends AuditableEntity {
     private Long openInvoiceId;
     private BigDecimal unappliedAmount = BigDecimal.ZERO;
 
-    public RemittanceLine() {
-    }
-
     public RemittanceFile getRemittanceFile() { return remittanceFile; }
     public void setRemittanceFile(RemittanceFile remittanceFile) { this.remittanceFile = remittanceFile; }
     public Long getLineNumber() { return lineNumber; }

@@ -8,14 +8,14 @@ public class LegacyFixedWidthParserTest {
 
     @Test
     public void fixedWidthDetailUsesLegacyOffsets() {
-        String record = fixedWidthRecord();
+        String fixedWidthRecordValue = fixedWidthRecord();
 
-        assertEquals("PAYER00001", record.substring(1, 11).trim());
-        assertEquals("INV-100045", record.substring(11, 31).trim());
-        assertEquals("000000000000001250", record.substring(31, 49));
-        assertEquals("000000000000001500", record.substring(49, 67));
-        assertEquals("SHRT", record.substring(67, 71).trim());
-        assertEquals("20260810", record.substring(71, 79));
+        assertEquals("PAYER00001", fixedWidthRecordValue.substring(1, 11).trim());
+        assertEquals("INV-100045", fixedWidthRecordValue.substring(11, 31).trim());
+        assertEquals("000000000000001250", fixedWidthRecordValue.substring(31, 49));
+        assertEquals("000000000000001500", fixedWidthRecordValue.substring(49, 67));
+        assertEquals("SHRT", fixedWidthRecordValue.substring(67, 71).trim());
+        assertEquals("20260810", fixedWidthRecordValue.substring(71, 79));
     }
 
     private String fixedWidthRecord() {

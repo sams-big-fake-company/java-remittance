@@ -45,9 +45,6 @@ public class RemittanceFile extends AuditableEntity {
     @OneToMany(mappedBy = "remittanceFile", cascade = CascadeType.ALL)
     private List<RemittanceLine> lines = new ArrayList<>();
 
-    public RemittanceFile() {
-    }
-
     public String getFileName() { return fileName; }
     public void setFileName(String fileName) { this.fileName = fileName; }
     public String getSenderBankId() { return senderBankId; }
