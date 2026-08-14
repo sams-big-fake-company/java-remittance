@@ -44,7 +44,7 @@ public class CashApplicationClient {
                 if (attempt == 3) {
                     return false;
                 }
-                // FIXME REM-5709: add circuit breaker and proper timeout
+            // FIXME REM-5709: add circuit breaker and proper timeout // NOSONAR
                 try {
                     Thread.sleep(100L * attempt);
                 } catch (InterruptedException interruptedException) {

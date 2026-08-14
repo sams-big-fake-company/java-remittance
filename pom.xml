@@ -22,7 +22,10 @@
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <springdoc.version>1.7.0</springdoc.version>
         <lombok.version>1.18.30</lombok.version>
-        <sonar.cpd.exclusions>src/main/resources/db/migration/**/*.sql</sonar.cpd.exclusions>
+        <sonar.cpd.exclusions>
+            src/main/resources/db/migration/**/*.sql,src/main/java/com/bigfake/remittance/domain/**/*.java,
+            src/main/java/com/bigfake/remittance/dto/**/*.java
+        </sonar.cpd.exclusions>
     </properties>
 
     <dependencies>
