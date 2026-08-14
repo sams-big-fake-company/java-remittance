@@ -58,8 +58,8 @@ instructions, and periodically sweeps stale exceptions.
 
 ## Tech Stack
 
-- **Java 11** (EOL - upgrade to 17 planned)
-- **Spring Boot 2.7.x** (upgrade to 3.x blocked by Java 11 requirement)
+- **Java 25** (current LTS)
+- **Spring Boot 3.5.x**
 - **Hibernate / Spring Data JPA**
 - **H2** (dev) / **PostgreSQL** (prod)
 - **Flyway** for database migrations
@@ -83,26 +83,26 @@ experiments with `remittance.scheduling.enabled=false`.
 
 ## Known Tech Debt / upgrade blockers
 
-- [ ] `javax.*` in `src/main/java/com/bigfake/remittance/domain/AuditableEntity.java`,
+- [x] `javax.*` in `src/main/java/com/bigfake/remittance/domain/AuditableEntity.java`,
   `src/main/java/com/bigfake/remittance/domain/Payer.java`,
   `src/main/java/com/bigfake/remittance/dto/ManualMatchRequest.java`,
   `src/main/java/com/bigfake/remittance/dto/PayerRequest.java`,
   `src/main/java/com/bigfake/remittance/dto/WebhookRequest.java`, and
   `src/main/java/com/bigfake/remittance/controller/GlobalExceptionHandler.java`
   must become `jakarta.*`.
-- [ ] `src/main/java/com/bigfake/remittance/config/SecurityConfig.java` extends removed
+- [x] `src/main/java/com/bigfake/remittance/config/SecurityConfig.java` extends removed
   `WebSecurityConfigurerAdapter` and
   uses removed `antMatchers` (REM-5580).
-- [ ] `springdoc-openapi-ui` 1.7.x must become the springdoc 2.x starter;
+- [x] `springdoc-openapi-ui` 1.7.x must become the springdoc 2.x starter;
   `src/main/java/com/bigfake/remittance/config/OpenApiConfig.java` and the
   `/swagger-ui.html` legacy path need review.
-- [ ] Hibernate 5 to 6 requires migrating `@Type(type = "yes_no")` in
+- [x] Hibernate 5 to 6 requires migrating `@Type(type = "yes_no")` in
   `src/main/java/com/bigfake/remittance/domain/AuditableEntity.java` and the
   explicit dialect properties in `src/main/resources/application.yml` and
   `src/main/resources/application-prod.yml`.
 - [ ] JUnit 4 Vintage compatibility is retained by `LegacyAmountUtilsTest`,
   `LegacyDateUtilsTest`, and `LegacyFixedWidthParserTest`.
-- [ ] `Dockerfile` uses a Java 11 base image and must move to Java 17.
+- [x] `Dockerfile` uses a Java 11 base image and must move to Java 17 (now on Java 25).
 - [ ] `src/main/java/com/bigfake/remittance/util/DateUtils.java` and
   `src/main/java/com/bigfake/remittance/service/impl/RemittanceProcessingServiceImpl.java`
   use `SimpleDateFormat`, `java.util.Date`, and `Calendar`.
