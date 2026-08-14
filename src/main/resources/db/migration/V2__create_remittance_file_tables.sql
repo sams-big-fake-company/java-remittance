@@ -4,7 +4,8 @@ CREATE TABLE remittance_file (
  checksum VARCHAR(64) NOT NULL, status VARCHAR(30) NOT NULL, reject_reason VARCHAR(50), reject_message VARCHAR(500),
  original_file_id BIGINT, declared_detail_count BIGINT, declared_total_amount NUMERIC(19,2),
  actual_detail_count BIGINT, actual_total_amount NUMERIC(19,2), received_at TIMESTAMP,
- created_at TIMESTAMP, created_by VARCHAR(100), updated_at TIMESTAMP, updated_by VARCHAR(100), version BIGINT, is_enabled CHAR(1) DEFAULT 'Y'
+ created_at TIMESTAMP, created_by VARCHAR(100), updated_at TIMESTAMP, updated_by VARCHAR(100),
+ version BIGINT NOT NULL DEFAULT 0, is_enabled CHAR(1) DEFAULT 'Y'
 );
 CREATE INDEX idx_remittance_checksum ON remittance_file(checksum);
 CREATE TABLE remittance_line (
@@ -13,7 +14,8 @@ CREATE TABLE remittance_line (
  paid_amount NUMERIC(19,2), invoiced_amount NUMERIC(19,2), deduction_reason_code VARCHAR(20),
  remittance_date DATE, status VARCHAR(30) NOT NULL, reject_reason VARCHAR(50), reject_message VARCHAR(500),
  match_type VARCHAR(30), open_invoice_id BIGINT, unapplied_amount NUMERIC(19,2) DEFAULT 0,
- created_at TIMESTAMP, created_by VARCHAR(100), updated_at TIMESTAMP, updated_by VARCHAR(100), version BIGINT, is_enabled CHAR(1) DEFAULT 'Y',
+ created_at TIMESTAMP, created_by VARCHAR(100), updated_at TIMESTAMP, updated_by VARCHAR(100),
+ version BIGINT NOT NULL DEFAULT 0, is_enabled CHAR(1) DEFAULT 'Y',
  CONSTRAINT fk_remittance_line_file FOREIGN KEY (remittance_file_id) REFERENCES remittance_file(id)
 );
 CREATE INDEX idx_remittance_line_file ON remittance_line(remittance_file_id);

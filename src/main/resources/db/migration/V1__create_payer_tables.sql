@@ -3,6 +3,7 @@ CREATE TABLE payer (
  name VARCHAR(150) NOT NULL, status VARCHAR(20) NOT NULL, email VARCHAR(200),
  address_line1 VARCHAR(200), address_line2 VARCHAR(200), city VARCHAR(100), state VARCHAR(50),
  postal_code VARCHAR(30), country VARCHAR(2), is_enabled CHAR(1) NOT NULL DEFAULT 'Y',
- created_at TIMESTAMP, created_by VARCHAR(100), updated_at TIMESTAMP, updated_by VARCHAR(100), version BIGINT
+ created_at TIMESTAMP, created_by VARCHAR(100), updated_at TIMESTAMP, updated_by VARCHAR(100),
+ version BIGINT NOT NULL DEFAULT 0
 );
 CREATE INDEX idx_payer_status ON payer(status);
