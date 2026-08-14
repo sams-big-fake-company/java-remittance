@@ -22,6 +22,10 @@
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <springdoc.version>1.7.0</springdoc.version>
         <lombok.version>1.18.30</lombok.version>
+        <sonar.cpd.exclusions>
+            src/main/resources/db/migration/**/*.sql,src/main/java/com/bigfake/remittance/domain/**/*.java,
+            src/main/java/com/bigfake/remittance/dto/**/*.java
+        </sonar.cpd.exclusions>
     </properties>
 
     <dependencies>
@@ -83,6 +87,17 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

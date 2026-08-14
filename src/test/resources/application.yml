@@ -1,0 +1,3 @@
+remittance:
+    scheduling:
+        enabled: false

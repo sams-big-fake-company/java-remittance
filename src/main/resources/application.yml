@@ -11,7 +11,12 @@ spring:
     password:
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  flyway:
+    enabled: true
   h2:
     console:
       enabled: true
@@ -20,3 +25,16 @@ spring:
 logging:
   level:
     com.bigfake.remittance: INFO
+remittance:
+  security:
+    username: admin
+    password: changeit
+  matching:
+    min-absolute-tolerance: 0.50
+    tolerance-percent: 0.5
+  inbound:
+    directory: ./inbound-remittance
+  exceptions:
+    stale-after-hours: 24
+  scheduling:
+    enabled: true
