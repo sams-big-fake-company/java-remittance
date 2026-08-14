@@ -1,6 +1,6 @@
 package com.bigfake.remittance.domain;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class PostalAddress {

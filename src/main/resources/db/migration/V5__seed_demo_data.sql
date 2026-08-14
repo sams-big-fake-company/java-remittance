@@ -1,3 +1,5 @@
+INSERT INTO payer(payer_code,name,status,email,address_line1,city,state,postal_code,country,is_enabled,
+                  created_at,created_by,updated_at,updated_by,version)
 WITH seed_constants AS (
     SELECT 'ACTIVE' AS active_status, 'INACTIVE' AS inactive_status,
            'Y' AS enabled_flag, 'N' AS disabled_flag, 'seed' AS actor,
@@ -18,8 +20,6 @@ seed_payers(payer_code,name,email,address_line1,city,state,postal_code,country,a
            ((SELECT old_payer FROM seed_constants),'Old Payer Incorporated','legacy@example.com',
             '500 Old Road','Denver','CO','80202','US',0,0)
 )
-INSERT INTO payer(payer_code,name,status,email,address_line1,city,state,postal_code,country,is_enabled,
-                  created_at,created_by,updated_at,updated_by,version)
 SELECT p.payer_code, p.name,
        CASE WHEN p.active = 1 THEN (SELECT active_status FROM seed_constants)
             ELSE (SELECT inactive_status FROM seed_constants) END,
@@ -31,6 +31,8 @@ SELECT p.payer_code, p.name,
        (SELECT initial_version FROM seed_constants)
 FROM seed_payers p;
 
+INSERT INTO open_invoice(payer_code,invoice_reference,normalized_reference,invoiced_amount,outstanding_amount,
+                         due_date,status,created_at,created_by,updated_at,updated_by,version)
 WITH seed_constants AS (
     SELECT 'OPEN' AS open_status, 'seed' AS actor,
            CURRENT_DATE AS due_date, CURRENT_TIMESTAMP AS audit_time, 0 AS initial_version,
@@ -49,8 +51,6 @@ seed_invoices(payer_code,invoice_reference,normalized_reference,invoiced_amount)
            ((SELECT umbrella_payer FROM seed_constants),'INV-400101','INV400101',1800.00),
            ((SELECT acme_payer FROM seed_constants),'INV-100048','INV100048',99.99)
 )
-INSERT INTO open_invoice(payer_code,invoice_reference,normalized_reference,invoiced_amount,outstanding_amount,
-                         due_date,status,created_at,created_by,updated_at,updated_by,version)
 SELECT i.payer_code, i.invoice_reference, i.normalized_reference, i.invoiced_amount, i.invoiced_amount,
        (SELECT due_date FROM seed_constants), (SELECT open_status FROM seed_constants),
        (SELECT audit_time FROM seed_constants), (SELECT actor FROM seed_constants),
