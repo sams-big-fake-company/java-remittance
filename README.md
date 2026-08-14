@@ -12,16 +12,49 @@ Company. It intentionally remains a 2019-era monolith under REM-4896.
 ### File format and business rules
 
 Inbound files are auto-detected: a first line containing `|` is delimited; all other
-files use 120-character fixed-width H/D/T records. The header carries sender, date,
-control number, detail count and amount in cents; the trailer repeats count and amount.
-Both totals must exactly equal parsed detail lines or the entire file is rejected.
-Delimited detail records are `D|payer|invoice|paid|invoiced|deduction|yyyyMMdd|memo`.
+files use 120-character fixed-width H/D/T records.
+
+Fixed-width detail fields use the legacy offsets below (the first character is the
+record type):
+
+| Positions (exclusive end) | Width | Field | Format |
+| --- | ---: | --- | --- |
+| `1..11` | 10 | Payer code | Trimmed text |
+| `11..31` | 20 | Invoice reference | Trimmed text |
+| `31..49` | 18 | Paid amount | Integer cents |
+| `49..67` | 18 | Invoiced amount | Integer cents |
+| `67..71` | 4 | Deduction code | Trimmed text |
+| `71..79` | 8 | Remittance date | `yyyyMMdd` |
+| `79..120` | 41 | Memo/reserved | Text |
+
+Delimited detail records are:
+`D|payer|invoice|paid|invoiced|deduction|yyyyMMdd|memo`.
+Headers contain sender, date, control number, detail count and amount; trailers
+repeat the count and amount. The header and trailer count and amount must exactly
+equal the parsed detail lines or the whole file is rejected.
+
 Accepted lines require an active payer, positive paid amount, non-negative invoiced
-amount, valid date (no more than 90 days ahead), and an active deduction code for
-short pays. Exact invoice reference, exact payer/amount, and tolerance-based amount
-matching are attempted in that order. Unmatched lines enter the exception queue.
-Short pays partially pay an invoice; overpays close the invoice and retain residual
-unapplied cash. Posting creates one advice per payer/date and a pending instruction.
+amount, a date no more than 90 days in the future, and an active deduction code for
+short pays. Reject reasons are `CONTROL_TOTAL_MISMATCH`, `MALFORMED_STRUCTURE`,
+`DUPLICATE_FILE`, `UNKNOWN_PAYER`, `INACTIVE_PAYER`, `INVALID_AMOUNT`,
+`INVALID_DATE`, `MISSING_INVOICE_REFERENCE`, `MISSING_DEDUCTION_CODE`,
+`INVALID_DEDUCTION_CODE`, and `MALFORMED_RECORD`.
+
+Matching uses three tiers: normalized invoice reference; exact payer and outstanding
+amount; then fuzzy amount matching. The fuzzy window is:
+`max(minimum absolute tolerance, tolerance percentage * paid amount)`.
+The defaults are configured by `remittance.matching.min-absolute-tolerance` and
+`remittance.matching.tolerance-percent`. Exact matches mark the invoice paid.
+Short pays mark the line `SHORT_PAID`, partially pay the invoice, and require a
+deduction reason. Overpays mark the invoice paid and store the residual in
+`unappliedAmount`. Unmatched lines enter the exception queue. Posting creates one
+advice per payer/date and a `PENDING` payment instruction.
+
+Files transition through `RECEIVED -> PARSING -> PARSED` or `REJECTED`.
+Duplicate SHA-256 checksums create a rejected file linked to the original and return
+HTTP 409. The inbound poller processes `.txt` and `.dat` files, moves successful
+files to `processed-*`, moves failed files to `failed-*`, dispatches pending
+instructions, and periodically sweeps stale exceptions.
 
 ## Tech Stack
 
@@ -42,19 +75,28 @@ unapplied cash. Posting creates one advice per payer/date and a pending instruct
 - `GET /api/v1/payers`, `/api/v1/payers/{payerCode}`, `POST /api/v1/payers`
 - `POST /webhooks/bank-remittance` (open bank intake)
 
-`/api/**` uses HTTP Basic. Local development defaults to `admin` / `changeit`;
-override `remittance.security.username` and `remittance.security.password`.
-Health, Swagger, H2 console and webhook routes are open.
+All `/api/**` endpoints require HTTP Basic. Local development defaults to
+`admin` / `changeit`; override `remittance.security.username` and
+`remittance.security.password`. The webhook, `/actuator/health`, Swagger endpoints,
+API docs, and H2 console are open. Scheduling can be disabled in tests or local
+experiments with `remittance.scheduling.enabled=false`.
 
 ## Known Tech Debt / upgrade blockers
 
-- [ ] `javax.*` imports throughout domain, DTO and servlet integrations must become `jakarta.*`
-- [ ] `config/SecurityConfig.java` uses removed `WebSecurityConfigurerAdapter` and `antMatchers` (REM-5580)
-- [ ] `springdoc-openapi-ui` 1.x must become springdoc 2.x starter
-- [ ] Hibernate 5 dialect properties and `@Type(type = "yes_no")` need Hibernate 6 migration
-- [ ] JUnit 4 tests rely on the Vintage engine
-- [ ] Dockerfile remains on the Java 11 base image
-- [ ] `util/DateUtils.java` and parser use mutable `Date`/`SimpleDateFormat`
+- [ ] `javax.*` in `domain/AuditableEntity.java`, `domain/Payer.java`, all
+  `dto/*Request.java`, and servlet validation handlers must become `jakarta.*`.
+- [ ] `config/SecurityConfig.java` extends removed `WebSecurityConfigurerAdapter` and
+  uses removed `antMatchers` (REM-5580).
+- [ ] `springdoc-openapi-ui` 1.7.x must become the springdoc 2.x starter;
+  `config/OpenApiConfig.java` and the `/swagger-ui.html` legacy path need review.
+- [ ] Hibernate 5 to 6 requires migrating `@Type(type = "yes_no")` in
+  `domain/AuditableEntity.java` and the explicit dialect properties in
+  `src/main/resources/application.yml` and `application-prod.yml`.
+- [ ] JUnit 4 Vintage compatibility is retained by `LegacyAmountUtilsTest`,
+  `LegacyDateUtilsTest`, and `LegacyFixedWidthParserTest`.
+- [ ] `Dockerfile` uses a Java 11 base image and must move to Java 17.
+- [ ] `util/DateUtils.java` and `parser/LegacyRemittanceParser.java` use
+  `SimpleDateFormat`, `java.util.Date`, and `Calendar`.
 - [ ] `client/CashApplicationClient.java` has no timeout, circuit breaker or proper retry (REM-5709)
 - [ ] Hibernate naming assumptions remain undocumented in migrations (FIXME REM-5522)
 

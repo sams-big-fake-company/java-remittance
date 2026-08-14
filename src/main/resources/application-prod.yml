@@ -1,0 +1,17 @@
+spring:
+    datasource:
+        url: ${REMITTANCE_DB_URL:jdbc:postgresql://localhost:5432/remittance}
+        username: ${REMITTANCE_DB_USERNAME:remittance}
+        password: ${REMITTANCE_DB_PASSWORD:changeit}
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        hibernate:
+            ddl-auto: validate
+        database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    flyway:
+        enabled: true
+
+remittance:
+    security:
+        username: ${REMITTANCE_BASIC_AUTH_USERNAME:admin}
+        password: ${REMITTANCE_BASIC_AUTH_PASSWORD:changeit}

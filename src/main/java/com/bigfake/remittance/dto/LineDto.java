@@ -1,26 +1,10 @@
-package com.bigfake.remittance.domain;
+package com.bigfake.remittance.dto;
 
-import com.bigfake.remittance.domain.enums.LineStatus;
-import com.bigfake.remittance.domain.enums.MatchType;
-import com.bigfake.remittance.domain.enums.RejectReason;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "remittance_line")
-public class RemittanceLine extends AuditableEntity {
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "remittance_file_id")
-    private RemittanceFile remittanceFile;
-
+public class LineDto {
+    private Long id;
     private Long lineNumber;
     private String rawRecord;
     private String payerCode;
@@ -29,26 +13,14 @@ public class RemittanceLine extends AuditableEntity {
     private BigDecimal invoicedAmount;
     private String deductionReasonCode;
     private LocalDate remittanceDate;
-
-    @Enumerated(EnumType.STRING)
-    private LineStatus status;
-
-    @Enumerated(EnumType.STRING)
-    private RejectReason rejectReason;
-
+    private String status;
+    private String rejectReason;
     private String rejectMessage;
+    private String matchType;
+    private BigDecimal unappliedAmount;
 
-    @Enumerated(EnumType.STRING)
-    private MatchType matchType;
-
-    private Long openInvoiceId;
-    private BigDecimal unappliedAmount = BigDecimal.ZERO;
-
-    public RemittanceLine() {
-    }
-
-    public RemittanceFile getRemittanceFile() { return remittanceFile; }
-    public void setRemittanceFile(RemittanceFile remittanceFile) { this.remittanceFile = remittanceFile; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public Long getLineNumber() { return lineNumber; }
     public void setLineNumber(Long lineNumber) { this.lineNumber = lineNumber; }
     public String getRawRecord() { return rawRecord; }
@@ -65,16 +37,14 @@ public class RemittanceLine extends AuditableEntity {
     public void setDeductionReasonCode(String deductionReasonCode) { this.deductionReasonCode = deductionReasonCode; }
     public LocalDate getRemittanceDate() { return remittanceDate; }
     public void setRemittanceDate(LocalDate remittanceDate) { this.remittanceDate = remittanceDate; }
-    public LineStatus getStatus() { return status; }
-    public void setStatus(LineStatus status) { this.status = status; }
-    public RejectReason getRejectReason() { return rejectReason; }
-    public void setRejectReason(RejectReason rejectReason) { this.rejectReason = rejectReason; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+    public String getRejectReason() { return rejectReason; }
+    public void setRejectReason(String rejectReason) { this.rejectReason = rejectReason; }
     public String getRejectMessage() { return rejectMessage; }
     public void setRejectMessage(String rejectMessage) { this.rejectMessage = rejectMessage; }
-    public MatchType getMatchType() { return matchType; }
-    public void setMatchType(MatchType matchType) { this.matchType = matchType; }
-    public Long getOpenInvoiceId() { return openInvoiceId; }
-    public void setOpenInvoiceId(Long openInvoiceId) { this.openInvoiceId = openInvoiceId; }
+    public String getMatchType() { return matchType; }
+    public void setMatchType(String matchType) { this.matchType = matchType; }
     public BigDecimal getUnappliedAmount() { return unappliedAmount; }
     public void setUnappliedAmount(BigDecimal unappliedAmount) { this.unappliedAmount = unappliedAmount; }
 }
