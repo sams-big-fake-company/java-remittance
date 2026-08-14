@@ -1,0 +1,2 @@
+-- Initial schema for remittance service
+-- TODO: define tables
