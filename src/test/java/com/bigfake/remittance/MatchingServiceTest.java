@@ -2,7 +2,7 @@ package com.bigfake.remittance;
 
 import com.bigfake.remittance.domain.OpenInvoice;
 import com.bigfake.remittance.domain.RemittanceLine;
-import com.bigfake.remittance.domain.enums.StatusEnums.MatchType;
+import com.bigfake.remittance.domain.enums.MatchType;
 import com.bigfake.remittance.repository.OpenInvoiceRepository;
 import com.bigfake.remittance.service.MatchingService;
 import com.bigfake.remittance.service.impl.MatchingServiceImpl;
@@ -13,10 +13,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Arrays;
+import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MatchingServiceTest {
