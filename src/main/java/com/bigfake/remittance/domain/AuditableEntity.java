@@ -1,15 +1,16 @@
 package com.bigfake.remittance.domain;
 
-import org.hibernate.annotations.Type;
+import org.hibernate.type.YesNoConverter;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Version;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Version;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -31,7 +32,7 @@ public abstract class AuditableEntity {
 
     private String updatedBy;
 
-    @Type(type = "yes_no")
+    @Convert(converter = YesNoConverter.class)
     @Column(name = "is_enabled", columnDefinition = "CHAR(1)")
     private Boolean enabled = Boolean.TRUE;
 

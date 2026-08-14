@@ -1,5 +1,6 @@
 package com.bigfake.remittance;
 
+import com.bigfake.remittance.config.SecurityConfig;
 import com.bigfake.remittance.controller.RemittanceController;
 import com.bigfake.remittance.dto.FileSummaryDto;
 import com.bigfake.remittance.dto.PayerRequest;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,6 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RemittanceController.class)
+@Import(SecurityConfig.class)
 class RemittanceControllerTest {
 
     @Autowired
